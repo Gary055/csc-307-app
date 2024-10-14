@@ -1,5 +1,6 @@
 // backend.js
 import express from "express";
+import cors from "cors";
 
 const app = express();
 const port = 8000;
@@ -63,7 +64,23 @@ app.get("/users/:id", (req, res) => {
   }
 });
 
+const addUser = (user) => {
+  users["users_list"].push(user);
+  return user;
+};
+
+app.post("/users", (req, res) => {
+  const userToAdd = req.body;
+  addUser(userToAdd);
+  res.send();
+});
+
+app.use(cors())
 app.use(express.json());
+
+app.delete("/users/:id", (req, res) => {
+  const id = req.params["id"];
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

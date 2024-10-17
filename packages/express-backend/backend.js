@@ -34,6 +34,9 @@ const users = {
   ]
 };
 
+app.use(cors())
+app.use(express.json());
+
 const findUserByName = (name) => {
   return users["users_list"].filter(
     (user) => user["name"] === name
@@ -75,8 +78,7 @@ app.post("/users", (req, res) => {
   res.send();
 });
 
-app.use(cors())
-app.use(express.json());
+
 
 app.delete("/users/:id", (req, res) => {
   const id = req.params["id"];

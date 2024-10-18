@@ -37,15 +37,31 @@ const users = {
 app.use(cors())
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 const findUserByName = (name) => {
   return users["users_list"].filter(
     (user) => user["name"] === name
   );
 };
 
+const findUserByNameJob = (name, job) => {
+  return users["users_list"].filter(
+    user => user["name"] === name && user["job"] === job
+  );
+};
+
 app.get("/users", (req, res) => {
   const name = req.query.name;
-  if (name != undefined) {
+  const job = req.query.job;
+  
+  if (name && job) {
+    let result = findUserByNameJob(name, job);
+    result = { users_list: result };
+    res.send(result);
+  } else if (name) {
     let result = findUserByName(name);
     result = { users_list: result };
     res.send(result);
@@ -78,14 +94,8 @@ app.post("/users", (req, res) => {
   res.send();
 });
 
-
-
 app.delete("/users/:id", (req, res) => {
   const id = req.params["id"];
-});
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
 });
 
 app.listen(port, () => {

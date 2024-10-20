@@ -1,6 +1,7 @@
 // backend.js
 import express from "express";
 import cors from "cors";
+import { randomUUID } from "crypto";
 
 const app = express();
 const port = 8000;
@@ -84,6 +85,7 @@ app.get("/users/:id", (req, res) => {
 });
 
 const addUser = (user) => {
+  user.id = randomUUID();
   users["users_list"].push(user);
   return user;
 };

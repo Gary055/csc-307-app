@@ -4,7 +4,7 @@ import cors from "cors";
 
 const app = express();
 const port = 8000;
-const users = {
+/* const users = {
   users_list: [
     {
       id: "xyz789",
@@ -32,7 +32,7 @@ const users = {
       job: "Bartender"
     }
   ]
-};
+}; */
 
 app.use(cors());
 app.use(express.json());

@@ -32,7 +32,14 @@ function MyApp() {
 
     function updateList(person) { 
       postUser(person)
-        .then(() => setCharacters([...characters, person]))
+        .then((res) => {
+          if(res.status === 201) {
+            return res.json();
+          } else {
+            throw new Error("Failed to add user");
+          }
+        })
+        .then((userToAdd) => setCharacters([...characters, userToAdd]))
         .catch((error) => {
           console.log(error);
         })
@@ -54,10 +61,6 @@ function MyApp() {
           <Form handleSubmit={updateList}/>
         </div>
       );
-    
-    function updateList(person) {
-        setCharacters([...characters, person]);
-    }
   }
 
 export default MyApp;

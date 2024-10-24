@@ -1,10 +1,12 @@
 // backend.js
 import express from "express";
 import cors from "cors";
+import userServices from "./user-services";
 
 const app = express();
 const port = 8000;
-/* const users = {
+/* 
+const users = {
   users_list: [
     {
       id: "xyz789",
@@ -32,7 +34,8 @@ const port = 8000;
       job: "Bartender"
     }
   ]
-}; */
+}; 
+*/
 
 app.use(cors());
 app.use(express.json());
@@ -41,6 +44,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+/* 
 const findUserByName = (name) => {
   return users["users_list"].filter(
     (user) => user["name"] === name
@@ -51,7 +55,26 @@ const findUserByNameJob = (name, job) => {
   return users["users_list"].filter(
     user => user["name"] === name && user["job"] === job
   );
+}; 
+
+const findUserById = (id) =>
+  users["users_list"].find((user) => user["id"] === id);
+
+const addUser = (user) => {
+  users["users_list"].push(user);
+  return user;
 };
+
+const deleteUserById = (id) => {
+  const index = users["users_list"].findIndex(user => user["id"] === id);
+  if (index !== -1) {
+    users["users_list"].splice(index, 1); // Remove the user at the found index
+    return true;
+  } else {
+    return false; // If user not found
+  }
+}
+*/
 
 app.get("/users", (req, res) => {
   const name = req.query.name;
@@ -70,9 +93,6 @@ app.get("/users", (req, res) => {
   }
 });
 
-const findUserById = (id) =>
-  users["users_list"].find((user) => user["id"] === id);
-
 app.get("/users/:id", (req, res) => {
   const id = req.params["id"]; //or req.params.id
   let result = findUserById(id);
@@ -83,27 +103,12 @@ app.get("/users/:id", (req, res) => {
   }
 });
 
-const addUser = (user) => {
-  users["users_list"].push(user);
-  return user;
-};
-
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
   userToAdd.id = Math.floor(Math.random() *100000).toString();
   addUser(userToAdd);
   res.status(201).send(userToAdd);
 });
-
-const deleteUserById = (id) => {
-  const index = users["users_list"].findIndex(user => user["id"] === id);
-  if (index !== -1) {
-    users["users_list"].splice(index, 1); // Remove the user at the found index
-    return true;
-  } else {
-    return false; // If user not found
-  }
-}
 
 app.delete("/users/:id", (req, res) => {
   const id = req.params["id"];

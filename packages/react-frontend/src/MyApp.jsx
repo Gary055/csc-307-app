@@ -45,12 +45,22 @@ function MyApp() {
         })
     }
     
-    function removeOneCharacter(index) {
-        const updated = characters.filter((character, i) => {
-          return i !== index;
-        });
-        setCharacters(updated);
-      }
+    function removeOneCharacter(id) {
+      fetch(`http://localhost:8000/users/${id}`, {  // Corrected the quotes
+          method: 'DELETE',
+      })
+      .then((response) => {
+          if (response.status === 204) {
+              const updated = characters.filter((character) => character.id !== id);
+              setCharacters(updated);
+          } else if (response.status === 404) {
+              console.error("User not found");
+          }
+      })
+      .catch((error) => {
+          console.error("Error:", error);
+      });
+    }
   
       return (
         <div className="container">

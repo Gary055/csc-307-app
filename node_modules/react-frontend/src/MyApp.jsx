@@ -45,13 +45,13 @@ function MyApp() {
         })
     }
     
-    function removeOneCharacter(id) {
-      fetch(`http://localhost:8000/users/${id}`, {  // Corrected the quotes
+    function removeOneCharacter(_id) {
+      fetch(`http://localhost:8000/users/${_id}`, {
           method: 'DELETE',
       })
       .then((response) => {
           if (response.status === 204) {
-              const updated = characters.filter((character) => character.id !== id);
+              const updated = characters.filter((character) => character._id !== _id);
               setCharacters(updated);
           } else if (response.status === 404) {
               console.error("User not found");

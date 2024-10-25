@@ -1,7 +1,7 @@
 // backend.js
 import express from "express";
 import cors from "cors";
-import userServices from "./user-services";
+import userServices from "./user-services.js";
 
 const app = express();
 const port = 8000;
@@ -76,47 +76,47 @@ const deleteUserById = (id) => {
 }
 */
 
-app.get("/users", (req, res) => {
-  const name = req.query.name;
-  const job = req.query.job;
-  
-  if (name && job) {
-    let result = findUserByNameJob(name, job);
-    result = { users_list: result };
-    res.send(result);
-  } else if (name) {
-    let result = findUserByName(name);
-    result = { users_list: result };
-    res.send(result);
-  } else {
-    res.send(users);
+app.get("/users", async (req, res) => {
+  const name = req.query["name"];
+  const job = req.query["job"];
+  try {
+    const result = await userServices.getUsers(name, job);
+    res.send({ users_list: result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("An error ocurred in the server.");
   }
 });
 
-app.get("/users/:id", (req, res) => {
+app.get("/users/:id", async (req, res) => {
   const id = req.params["id"]; //or req.params.id
-  let result = findUserById(id);
-  if (result === undefined) {
+  let result = await userServices.findUserById(id);
+  if (result === undefined || result === null) {
     res.status(404).send("Resource not found.");
   } else {
-    res.send(result);
+    res.send({user_list: result});
   }
 });
 
-app.post("/users", (req, res) => {
-  const userToAdd = req.body;
-  userToAdd.id = Math.floor(Math.random() *100000).toString();
-  addUser(userToAdd);
-  res.status(201).send(userToAdd);
+app.post("/users", async (req, res) => {
+  const user = req.body;
+  const savedUser = await userServices.addUser(user);
+  if(savedUser) res.status(201).send(savedUser);
+  else res.status(500).end();
 });
 
-app.delete("/users/:id", (req, res) => {
+app.delete("/users/:id", async (req, res) => {
   const id = req.params["id"];
-  let result = deleteUserById(id);
-  if(result === undefined) {
-    res.status(404).send("User not found.");
-  } else {
-    res.status(204).send();
+  try {
+    let result = await userServices.deleteUserById(id);
+    if(!result) {
+      res.status(404).send("User not found.");
+    } else {
+      res.status(204).end();
+    }
+  } catch(error) {
+    console.error("Deletion error:", error);
+    res.status(500).send("Server error.")
   }
 });
 

@@ -7,7 +7,7 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "My first CSC 307 project",
   "workspaces": [
     "packages/*"
   ],
